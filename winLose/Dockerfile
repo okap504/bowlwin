@@ -1,5 +1,5 @@
-# ビルドステージ：Java 21 + Maven
-FROM maven:3.9.0-jdk-21 AS build
+# ビルドステージ：Maven + JDK 17（安定して利用できる）
+FROM maven:3.9.4-jdk-17 AS build
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-# 実行ステージ：軽量JDK21
+# 実行ステージ：Java 21ランタイム
 FROM openjdk:21-jdk
 
 WORKDIR /app
