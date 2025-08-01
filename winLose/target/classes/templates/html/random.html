@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link th:href="@{css/html5reset-1.6.1.css}" rel="stylesheet">
+<link th:href="@{css/base.css}" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<img class="headerLogo" src="images/bowlwin.png">
+	</header>
+	<main>
+		<span th:if="${errMsg != null}">
+			<span th:text="${errMsg}" class="err"></span>
+			<br>
+		</span>
+	<p class="title">名前を入力してください</p>
+	
+	<form th:action="@{/setting-first}" method="post">
+		
+		<span th:each="user ,iterStat : ${userListWrapper.userList}">
+			<label><span th:text="${ iterStat.index+1 }"></span>人目</label>
+<!--			<input class="name-form" type="text" th:name="${user.name}" th:value="${user.name}">-->
+			<input class="name-form" type="text" th:name="userList[__${iterStat.index}__].name" th:value="${user.name}">
+			<br>
+		</span>
+		
+		<button type="submit">次へ</button>
+		
+	</form>
+	</main>
+</body>
+</html>
