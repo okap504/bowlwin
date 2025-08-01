@@ -1,5 +1,5 @@
-# ビルドステージ：Maven + JDK 17（安定して利用できる）
-FROM maven:3.9.4-jdk-17 AS build
+# ビルドステージ：Maven + OpenJDK17
+FROM maven:3.9.4-openjdk-17 AS build
 
 WORKDIR /app
 
