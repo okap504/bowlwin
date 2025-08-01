@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<link th:href="@{css/html5reset-1.6.1.css}" rel="stylesheet">
+	<link th:href="@{css/base.css}" rel="stylesheet">
+</head>
+
+<body>
+	<header>
+		<img class="headerLogo" src="images/bowlwin.png">
+	</header>
+	<main>
+		<span th:if="${errMsg != null}">
+			<span th:text="${errMsg}" class="err"></span>
+			<br>
+		</span>
+		<p class="title">チームを選択してください</p>
+		<form th:action="@{/random}" th:object="${userListWrapper}" method="post">
+			<div class="random-container">
+				<button type="submit" class="random">ランダム</button>
+			</div>
+			<span th:each="user ,iterStat : *{userList}">
+				<input type="hidden" th:name="userList[__${iterStat.index}__].name" th:value="${user.name}" >
+				<input type="hidden" th:name="userList[__${iterStat.index}__].money" th:value="${user.money}" >
+				<input type="hidden" th:name="userList[__${iterStat.index}__].historyList" th:value="${user.historyList}" >
+			</span>
+			<input type="hidden" th:field="*{count}" />
+		</form>
+		<form th:action="@{/battle}" th:object="${userListWrapper}" method="post">
+			<div class="nameContainer">
+				<span class="nameSet" th:each="user ,iterStat : *{userList}">
+					<label class="checkbox-container">
+						<input type="checkbox" th:name="userList[__${iterStat.index}__].team" th:value=1
+							onclick="limitCheckboxes(this)" th:checked="${user.team == 1}">
+						<span class="checkmark"></span>
+						<span class="name" th:text="${user.name}"></span>
+					</label>
+					<input type="hidden" th:name="|userList[${iterStat.index}].name|" th:value="${user.name}" />
+					<input type="hidden" th:name="|userList[${iterStat.index}].money|" th:value="${user.money}" />
+					<input type="hidden" th:name="|userList[${iterStat.index}].historyList|"
+						th:value="${user.historyList}" />
+					<br>
+				</span>
+			</div>
+			<p class="title">ピン数を選択してください</p>
+			<div class="pinContainer">
+				<label class="radio-style-container">
+					<input type="radio" name="multi" value="30" onclick="limitCheckboxes(this)">
+					<span class="radio-style-checkmark"></span>
+					<span class="name">ピン30</span>
+				</label>
+				<br>
+				<label class="radio-style-container">
+					<input type="radio" name="multi" value="40" onclick="limitCheckboxes(this)">
+					<span class="radio-style-checkmark"></span>
+					<span class="name">ピン40</span>
+				</label>
+				<br>
+				<label class="radio-style-container">
+					<input type="radio" name="multi" value="50" onclick="limitCheckboxes(this)">
+					<span class="radio-style-checkmark"></span>
+					<span class="name">ピン50</span>
+				</label>
+				<br>
+				<label class="radio-style-container">
+					<input type="radio" name="multi" value="60" onclick="limitCheckboxes(this)">
+					<span class="radio-style-checkmark"></span>
+					<span class="name">任意</span>
+				</label>
+				<br>
+			</div>
+			<p>
+				<label>任意</label>
+				<input class="name-form" type="number" th:name="optional">
+			</p>
+			<br>
+			<div>
+				<button type="submit">次へ</button>
+			</div>
+			<div class="takumi-button-container">
+				<a href="#modal-02" class="button">たくみ</a>
+			</div>
+			
+			<input type="hidden" th:field="*{count}" />
+		</form>
+	</main>
+	<footer>
+		<div>
+			<span th:text="${userListWrapper.count}"></span>回目
+		</div>
+		<table class="user-table">
+			<thead>
+				<tr>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user : ${userListWrapper.userList}">
+					<td class="left" th:text="${user.name}">名前</td>
+					<td class="right" th:text="${user.money}">所持金</td>
+				</tr>
+			</tbody>
+		</table>
+		<a href="#modal-01" class="button">履歴</a>
+	</footer>
+	<!--	モーダル-->
+	<div class="modal-wrapper" id="modal-01">
+		<a href="#!" class="modal-overlay"></a>
+		<div class="modal-window">
+			<div class="modal-content">
+				<p></p>
+				<div class="note">
+					<span th:each="user ,iterStat : ${userListWrapper.userList}">
+						<span th:text="${user.name}"></span>
+						<br>
+						<span th:if="${user.historyList != null and !#lists.isEmpty(user.historyList)}"
+							th:each="history, iterStat : ${user.historyList}">
+							<span th:if="${iterStat.index != 0}">
+								<span th:text="${iterStat.index}"></span>:
+								<span th:text="${history}"></span><br>
+							</span>
+						</span>
+						<br>
+					</span>
+					<a href="#!" class="modal-close">確認</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+	<div class="modal-wrapper" id="modal-02">
+		<a href="#!" class="modal-overlay"></a>
+		<div class="modal-window">
+			<div class="modal-content">
+				<p></p>
+				<div class="note">
+					<div class="takumi-container">
+						<img src="images/takumi.png">
+					</div>
+					<a href="#!" class="modal-close">確認</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
