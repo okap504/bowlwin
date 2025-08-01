@@ -1,11 +1,24 @@
-# ベースイメージ（Java 21 を使用）
-FROM openjdk:21-jdk
+# ビルドステージ：Mavenでビルド（Java 21 + Maven公式イメージ）
+FROM maven:3.9.0-eclipse-temurin-21 AS build
 
-# ② 作業ディレクトリを作成（/appという名前）
 WORKDIR /app
 
-# ③ JARファイルをコピー（名前はあなたのJAR名に合わせる）
-COPY target/winLose-0.0.1-SNAPSHOT.jar app.jar
+# pom.xmlを先にコピーして依存解決をキャッシュしやすくする
+COPY pom.xml .
 
-# ④ アプリケーションを実行する
+# ソースコードをコピー
+COPY src ./src
+
+# ビルド実行（テストはスキップ）
+RUN mvn clean package -DskipTests
+
+# 実行ステージ：軽量なJDKイメージ
+FROM openjdk:21-jdk
+
+WORKDIR /app
+
+# ビルドステージから生成したJARファイルをコピー
+COPY --from=build /app/target/winLose-0.0.1-SNAPSHOT.jar app.jar
+
+# アプリ起動コマンド
 CMD ["java", "-jar", "app.jar"]
