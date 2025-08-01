@@ -1,18 +1,11 @@
-# ビルドステージ：Maven + OpenJDK17
-FROM maven:3.9.4-openjdk-17 AS build
-
-WORKDIR /app
-
-COPY pom.xml .
-COPY src ./src
-
-RUN mvn clean package -DskipTests
-
-# 実行ステージ：Java 21ランタイム
+# ベースイメージ（Java 21 を使用）
 FROM openjdk:21-jdk
 
+# ② 作業ディレクトリを作成（/appという名前）
 WORKDIR /app
 
-COPY --from=build /app/target/winLose-0.0.1-SNAPSHOT.jar app.jar
+# ③ JARファイルをコピー（名前はあなたのJAR名に合わせる）
+COPY target/winLose-0.0.1-SNAPSHOT.jar app.jar
 
+# ④ アプリケーションを実行する
 CMD ["java", "-jar", "app.jar"]
